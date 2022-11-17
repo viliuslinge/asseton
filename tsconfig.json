@@ -2,19 +2,20 @@
   "compilerOptions": {
     "strict": true,
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "module": "ESNext",
+    "useDefineForClassFields": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
     "allowJs": true,
     "checkJs": true,
-    "isolatedModules": true,
     "composite": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "esModuleInterop": true,
     "paths": {
+      "src/*": ["src/*"],
       "database": ["src/database"],
       "database/*": ["src/database/*"],
       "providers": ["src/providers"],
@@ -22,5 +23,5 @@
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules/**/*"]
 }
