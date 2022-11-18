@@ -12,6 +12,7 @@ import {
 
 import { NordigenClient } from "./NordigenClient";
 import { NordginenApiTypes } from "./NordigenApi";
+import { findProviderRequisition } from "./utils";
 
 interface IRequisition {
   id: string;
@@ -115,46 +116,20 @@ export class NordigenProvider extends AuthenticatedProvider {
     const allAgreements: NordginenApiTypes.IAgreements =
       await this.client.getAgreements();
 
-    const providerAgreements: NordginenApiTypes.IAgreement[] =
-      allAgreements.results.filter((it) => it.institution_id === this.id);
-
     const allRequisitions: NordginenApiTypes.IRequisitions =
       await this.client.getRequisitions();
 
-    const providerRequisitions: NordginenApiTypes.IRequisition[] =
-      allRequisitions.results
-        .filter((it) => it.institution_id === this.id)
-        .sort(
-          (a, b) =>
-            new Date(b.created).getTime() - new Date(a.created).getTime()
-        );
+    const result = findProviderRequisition({
+      providerID: this.id,
+      agreements: allAgreements,
+      requisitions: allRequisitions,
+    });
 
-    const validProviderRequisitions: NordginenApiTypes.IRequisition[] =
-      providerRequisitions.filter((it) => {
-        const agreement = providerAgreements.find(
-          (agr) => agr.id === it.agreement
-        );
-
-        if (!agreement) {
-          return false;
-        }
-
-        if (!this.isAgreementValid(agreement)) {
-          return false;
-        }
-
-        return true;
-      });
-
-    const requisition =
-      validProviderRequisitions.find((it) => it.status === "LN") ??
-      validProviderRequisitions.find((it) => it.status === "CR");
-
-    if (!requisition) {
-      return;
+    if (result) {
+      return this.transformRequisition(result);
     }
 
-    return this.transformRequisition(requisition);
+    return result;
   };
 
   private transformRequisition = (
@@ -177,16 +152,5 @@ export class NordigenProvider extends AuthenticatedProvider {
       status: transformStatus(requisition.status),
       accountIDs: requisition.accounts,
     };
-  };
-
-  private isAgreementValid = (
-    agreement: NordginenApiTypes.IAgreement
-  ): boolean => {
-    const timeNow = new Date().getTime();
-    const validUntil =
-      new Date(agreement.created).getTime() +
-      agreement.access_valid_for_days * 24 * 60 * 60 * 1000;
-
-    return validUntil > timeNow;
   };
 }

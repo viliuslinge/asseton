@@ -4,7 +4,7 @@ export const agreement_1: NordginenApiTypes.IAgreement = {
   id: "a1",
   created: new Date().toISOString(),
   max_historical_days: 10,
-  access_valid_for_days: 1,
+  access_valid_for_days: 2,
   access_scope: [],
   institution_id: "nordigen",
 };
