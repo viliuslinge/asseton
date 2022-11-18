@@ -2,7 +2,11 @@ import express from "express";
 import bodyParser from "body-parser";
 
 import { providerFactory, AuthenticatedProvider } from "providers";
-import { Database, DatabaseTypes } from "database";
+import {
+  Database,
+  DatabaseTypes,
+  isDataSnapshotRefreshRequired,
+} from "database";
 import { ServerApiError } from "./errors";
 
 const port: string = process.env.HTTP_PORT || "3001";
@@ -25,7 +29,7 @@ app.get<{ providerID: string }, DatabaseTypes.IProviderData | Error>(
       const provider = providerFactory.createProvider({ id: providerID });
 
       let data = await db.getProviderDataSnapshot(provider.id);
-      if (data && !db.isDataSnapshotRefreshRequired(data.createdAt)) {
+      if (data && !isDataSnapshotRefreshRequired(data.createdAt)) {
         res.send(data);
         return;
       }

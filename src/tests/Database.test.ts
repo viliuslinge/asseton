@@ -1,17 +1,16 @@
-import { Database } from "database";
+import { DATA_SNAPSHOT_REFRESH_INTERVAL } from "src/const";
+import { isDataSnapshotRefreshRequired } from "database";
 
-/**
- * Database:
- * 1. Gets empty provider data
- * 2. Gets existing provider data
- * 3. Sets provider data
- * 4. Data requires refresh
- * 5. Data doesnt require refresh
- */
+it("Data requires refresh", () => {
+  expect(
+    isDataSnapshotRefreshRequired(
+      new Date(
+        new Date().getTime() - DATA_SNAPSHOT_REFRESH_INTERVAL
+      ).toISOString()
+    )
+  ).toBeTruthy();
+});
 
-test("database", async () => {
-  const db = new Database();
-  const a = await db.getProviderDataSnapshot("d");
-
-  console.log(a);
+it("Data doesnt require refresh", () => {
+  expect(isDataSnapshotRefreshRequired(new Date().toISOString())).toBeFalsy();
 });

@@ -1,7 +1,7 @@
 import NordigenApiRaw from "nordigen-node";
 import { AccountApi } from "nordigen-node/types/api";
 
-import { agreement_1, requisition_1, balances_1 } from "tests/mocks";
+import { nordigen } from "tests/mocks";
 
 import { NordginenApiTypes } from "../types";
 
@@ -26,12 +26,12 @@ export const NordigenApi = (
       },
       getAgreementById: (): Promise<NordginenApiTypes.IAgreement> => {
         return new Promise((res) => {
-          return res(agreement_1);
+          return res(nordigen.agreement_1);
         });
       },
       createAgreement: (): Promise<NordginenApiTypes.IAgreement> => {
         return new Promise((res) => {
-          return res(agreement_1);
+          return res(nordigen.agreement_1);
         });
       },
     },
@@ -45,12 +45,12 @@ export const NordigenApi = (
       },
       getRequisitionById: (): Promise<NordginenApiTypes.IRequisition> => {
         return new Promise((res) => {
-          return res(requisition_1);
+          return res(nordigen.requisition_1);
         });
       },
       createRequisition: (): Promise<NordginenApiTypes.IRequisition> => {
         return new Promise((res) => {
-          return res(requisition_1);
+          return res(nordigen.requisition_1);
         });
       },
       deleteRequisition:
@@ -66,7 +66,7 @@ export const NordigenApi = (
       return {
         getBalances: (): Promise<NordginenApiTypes.IBalances> => {
           return new Promise((res) => {
-            return res(balances_1);
+            return res(nordigen.balances_1);
           });
         },
       };

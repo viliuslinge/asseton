@@ -1,6 +1,7 @@
-import { NordginenApiTypes } from "src/providers/Nordigen/NordigenApi";
+import { DatabaseTypes } from "database";
+import { NordginenApiTypes } from "providers/Nordigen/NordigenApi";
 
-export const agreement_1: NordginenApiTypes.IAgreement = {
+const agreement_1: NordginenApiTypes.IAgreement = {
   id: "a1",
   created: new Date().toISOString(),
   max_historical_days: 10,
@@ -9,7 +10,7 @@ export const agreement_1: NordginenApiTypes.IAgreement = {
   institution_id: "nordigen",
 };
 
-export const requisition_1: NordginenApiTypes.IRequisition = {
+const requisition_1: NordginenApiTypes.IRequisition = {
   id: "r1",
   created: new Date().toISOString(),
   redirect: "https://google.com",
@@ -24,7 +25,7 @@ export const requisition_1: NordginenApiTypes.IRequisition = {
   redirect_immediate: false,
 };
 
-export const balances_1: NordginenApiTypes.IBalances = {
+const balances_1: NordginenApiTypes.IBalances = {
   balances: [
     {
       balanceAmount: {
@@ -35,4 +36,29 @@ export const balances_1: NordginenApiTypes.IBalances = {
       referenceDate: new Date().toISOString(),
     },
   ],
+};
+
+const data_snapshot_1: DatabaseTypes.IProviderData = {
+  id: "provider-1",
+  createdAt: new Date().toISOString(),
+  accounts: [
+    {
+      assets: [
+        {
+          symbol: "EUR",
+          amount: 1000000,
+        },
+      ],
+    },
+  ],
+};
+
+export const nordigen = {
+  agreement_1,
+  requisition_1,
+  balances_1,
+};
+
+export const database = {
+  data_snapshot_1,
 };

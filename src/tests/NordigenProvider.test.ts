@@ -5,7 +5,7 @@ import { NordigenProvider } from "providers/Nordigen/NordigenProvider";
 import { AccountApi, NordginenApiTypes } from "providers/Nordigen/NordigenApi";
 import { findProviderRequisition } from "providers/Nordigen/utils";
 
-import { agreement_1, requisition_1, balances_1 } from "./mocks";
+import { nordigen } from "./mocks";
 
 const providerID = "nordigen";
 
@@ -22,7 +22,7 @@ it("Fails getting data snapshot with incompleted authentication", async () => {
     .mockResolvedValue({
       results: [
         {
-          ...agreement_1,
+          ...nordigen.agreement_1,
           institution_id: providerID,
         },
       ],
@@ -33,7 +33,7 @@ it("Fails getting data snapshot with incompleted authentication", async () => {
     .mockResolvedValue({
       results: [
         {
-          ...requisition_1,
+          ...nordigen.requisition_1,
           institution_id: providerID,
         },
       ],
@@ -53,7 +53,7 @@ it("Succeeds getting data snapshot with completed authentication", async () => {
     .mockReturnValue({
       getBalances: () => {
         return new Promise((res) => {
-          return res(balances_1);
+          return res(nordigen.balances_1);
         });
       },
     } as AccountApi);
@@ -63,7 +63,7 @@ it("Succeeds getting data snapshot with completed authentication", async () => {
     .mockResolvedValue({
       results: [
         {
-          ...agreement_1,
+          ...nordigen.agreement_1,
           institution_id: providerID,
         },
       ],
@@ -74,7 +74,7 @@ it("Succeeds getting data snapshot with completed authentication", async () => {
     .mockResolvedValue({
       results: [
         {
-          ...requisition_1,
+          ...nordigen.requisition_1,
           status: "LN",
           institution_id: providerID,
         },
@@ -88,8 +88,10 @@ it("Succeeds getting data snapshot with completed authentication", async () => {
       {
         assets: [
           {
-            amount: Number(balances_1.balances[0].balanceAmount.amount),
-            symbol: balances_1.balances[0].balanceAmount.currency,
+            amount: Number(
+              nordigen.balances_1.balances[0].balanceAmount.amount
+            ),
+            symbol: nordigen.balances_1.balances[0].balanceAmount.currency,
           },
         ],
       },
@@ -121,13 +123,13 @@ it("Succeeds initiating authenticating for the first time", async () => {
   const createRequisitionsSpy = jest
     .spyOn(provider.client.api.requisition, "createRequisition")
     .mockResolvedValue({
-      ...requisition_1,
+      ...nordigen.requisition_1,
       institution_id: providerID,
     });
 
   const received = await provider.createAuthentication({ redirectUrl: "" });
   const expected: IProviderAuthentication = {
-    authenticationUrl: requisition_1.link,
+    authenticationUrl: nordigen.requisition_1.link,
   };
 
   expect(received).toEqual(expect.objectContaining(expected));
@@ -145,7 +147,7 @@ it("Succeds initiating authentication if incompleted authentication exists. Retu
     .mockResolvedValue({
       results: [
         {
-          ...agreement_1,
+          ...nordigen.agreement_1,
           institution_id: providerID,
         },
       ],
@@ -156,7 +158,7 @@ it("Succeds initiating authentication if incompleted authentication exists. Retu
     .mockResolvedValue({
       results: [
         {
-          ...requisition_1,
+          ...nordigen.requisition_1,
           institution_id: providerID,
         },
       ],
@@ -164,7 +166,7 @@ it("Succeds initiating authentication if incompleted authentication exists. Retu
 
   const received = await provider.createAuthentication({ redirectUrl: "" });
   const expected: IProviderAuthentication = {
-    authenticationUrl: requisition_1.link,
+    authenticationUrl: nordigen.requisition_1.link,
   };
 
   expect(received).toEqual(expect.objectContaining(expected));
@@ -181,7 +183,7 @@ it("Fails authenticating if completed and valid authentication exists", async ()
     .mockResolvedValue({
       results: [
         {
-          ...agreement_1,
+          ...nordigen.agreement_1,
           institution_id: providerID,
         },
       ],
@@ -192,7 +194,7 @@ it("Fails authenticating if completed and valid authentication exists", async ()
     .mockResolvedValue({
       results: [
         {
-          ...requisition_1,
+          ...nordigen.requisition_1,
           status: "LN",
           institution_id: providerID,
         },
@@ -238,7 +240,7 @@ it("Succeds deleting existing authentication", async () => {
     .mockResolvedValue({
       results: [
         {
-          ...agreement_1,
+          ...nordigen.agreement_1,
           institution_id: providerID,
         },
       ],
@@ -249,7 +251,7 @@ it("Succeds deleting existing authentication", async () => {
     .mockResolvedValue({
       results: [
         {
-          ...requisition_1,
+          ...nordigen.requisition_1,
           institution_id: providerID,
         },
       ],
@@ -269,7 +271,7 @@ it("Fails finding existing provider requisition: No results matching providerID"
   const agreements: NordginenApiTypes.IAgreements = {
     results: [
       {
-        ...agreement_1,
+        ...nordigen.agreement_1,
         institution_id: "any-other-provider",
       },
     ],
@@ -278,7 +280,7 @@ it("Fails finding existing provider requisition: No results matching providerID"
   const requisitions: NordginenApiTypes.IRequisitions = {
     results: [
       {
-        ...requisition_1,
+        ...nordigen.requisition_1,
         institution_id: "any-other-provider",
       },
     ],
@@ -300,10 +302,11 @@ it("Fails finding existing provider requisition: existing requisition is expired
   const agreements: NordginenApiTypes.IAgreements = {
     results: [
       {
-        ...agreement_1,
+        ...nordigen.agreement_1,
         institution_id: provider.id,
         created: new Date(
-          new Date().getTime() - dayInMS * agreement_1.access_valid_for_days
+          new Date().getTime() -
+            dayInMS * nordigen.agreement_1.access_valid_for_days
         ).toISOString(),
       },
     ],
@@ -312,7 +315,7 @@ it("Fails finding existing provider requisition: existing requisition is expired
   const requisitions: NordginenApiTypes.IRequisitions = {
     results: [
       {
-        ...requisition_1,
+        ...nordigen.requisition_1,
         institution_id: provider.id,
       },
     ],
@@ -333,11 +336,11 @@ it("Succeeds finding existing provider requisition: Finds valid, completed requi
   const agreements: NordginenApiTypes.IAgreements = {
     results: [
       {
-        ...agreement_1,
+        ...nordigen.agreement_1,
         institution_id: provider.id,
       },
       {
-        ...agreement_1,
+        ...nordigen.agreement_1,
         id: "a2",
         institution_id: provider.id,
       },
@@ -347,12 +350,12 @@ it("Succeeds finding existing provider requisition: Finds valid, completed requi
   const requisitions: NordginenApiTypes.IRequisitions = {
     results: [
       {
-        ...requisition_1,
+        ...nordigen.requisition_1,
         institution_id: provider.id,
         status: "CR",
       },
       {
-        ...requisition_1,
+        ...nordigen.requisition_1,
         id: "r1",
         agreement: "a2",
         institution_id: provider.id,
@@ -377,11 +380,11 @@ it("Succeeds finding existing provider requisition: Finds valid, incompleted req
   const agreements: NordginenApiTypes.IAgreements = {
     results: [
       {
-        ...agreement_1,
+        ...nordigen.agreement_1,
         institution_id: provider.id,
       },
       {
-        ...agreement_1,
+        ...nordigen.agreement_1,
         id: "a2",
         institution_id: provider.id,
       },
@@ -391,13 +394,13 @@ it("Succeeds finding existing provider requisition: Finds valid, incompleted req
   const requisitions: NordginenApiTypes.IRequisitions = {
     results: [
       {
-        ...requisition_1,
+        ...nordigen.requisition_1,
         institution_id: provider.id,
         status: "CR",
         created: new Date().toISOString(),
       },
       {
-        ...requisition_1,
+        ...nordigen.requisition_1,
         id: "r1",
         agreement: "a2",
         institution_id: provider.id,
