@@ -1,5 +1,5 @@
 {
-  "name": "asset-base",
+  "name": "asseton",
   "version": "0.1.0",
   "description": "API to your assets",
   "author": "Vilius Linge",
@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/viliuslinge/asset-base.git"
+    "url": "git+https://github.com/viliuslinge/asseton.git"
   },
   "main": "src/index.ts",
   "scripts": {
