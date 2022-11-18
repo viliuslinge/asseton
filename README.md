@@ -1,3 +1,5 @@
-![asseton-logo](https://user-images.githubusercontent.com/25182375/202711535-027f0da0-931b-4e30-91ee-7d995d88c510.png)
+![asseton-logo](https://user-images.githubusercontent.com/25182375/202713698-eeb43a67-e719-465f-b022-cf74c8b37f1b.png)
+
+#
 
 Access your assets.
