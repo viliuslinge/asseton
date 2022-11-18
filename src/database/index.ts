@@ -1,3 +1,5 @@
-export * from "./Database";
+import { Database } from "./Database";
+
 export * from "./types";
-export * from "./utils";
+
+export const db = new Database();

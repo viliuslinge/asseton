@@ -1,5 +1,5 @@
 import { DATA_SNAPSHOT_REFRESH_INTERVAL } from "src/config";
-import { isDataSnapshotRefreshRequired } from "database";
+import { isDataSnapshotRefreshRequired } from "database/utils";
 
 it("Data requires refresh", () => {
   expect(

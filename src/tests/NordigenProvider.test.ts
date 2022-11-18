@@ -3,7 +3,11 @@ import { ServerApiError } from "src/errors";
 import { TEST_PROVIDER_ID } from "src/config";
 import { IProviderAuthentication } from "providers/Provider";
 import { NordigenProvider } from "providers/Nordigen/NordigenProvider";
-import { AccountApi, NordginenApiTypes } from "providers/Nordigen/NordigenApi";
+import {
+  AccountApi,
+  NordginenApiTypes,
+  nordigenApi,
+} from "providers/Nordigen/NordigenApi";
 import { findProviderRequisition } from "providers/Nordigen/utils";
 
 import { nordigen } from "./mocks";
@@ -19,7 +23,7 @@ it("Fails getting data snapshot with incompleted authentication", async () => {
   const provider = new NordigenProvider({ id: providerID });
 
   const getAgreementsSpy = jest
-    .spyOn(provider.client.api.agreement, "getAgreements")
+    .spyOn(nordigenApi.agreement, "getAgreements")
     .mockResolvedValue({
       results: [
         {
@@ -30,7 +34,7 @@ it("Fails getting data snapshot with incompleted authentication", async () => {
     });
 
   const getRequisitionsSpy = jest
-    .spyOn(provider.client.api.requisition, "getRequisitions")
+    .spyOn(nordigenApi.requisition, "getRequisitions")
     .mockResolvedValue({
       results: [
         {
@@ -49,18 +53,16 @@ it("Fails getting data snapshot with incompleted authentication", async () => {
 it("Succeeds getting data snapshot with completed authentication", async () => {
   const provider = new NordigenProvider({ id: providerID });
 
-  const getBalancesSpy = jest
-    .spyOn(provider.client.api, "account")
-    .mockReturnValue({
-      getBalances: () => {
-        return new Promise((res) => {
-          return res(nordigen.balances_1);
-        });
-      },
-    } as AccountApi);
+  const getBalancesSpy = jest.spyOn(nordigenApi, "account").mockReturnValue({
+    getBalances: () => {
+      return new Promise((res) => {
+        return res(nordigen.balances_1);
+      });
+    },
+  } as AccountApi);
 
   const getAgreementsSpy = jest
-    .spyOn(provider.client.api.agreement, "getAgreements")
+    .spyOn(nordigenApi.agreement, "getAgreements")
     .mockResolvedValue({
       results: [
         {
@@ -71,7 +73,7 @@ it("Succeeds getting data snapshot with completed authentication", async () => {
     });
 
   const getRequisitionsSpy = jest
-    .spyOn(provider.client.api.requisition, "getRequisitions")
+    .spyOn(nordigenApi.requisition, "getRequisitions")
     .mockResolvedValue({
       results: [
         {
@@ -110,19 +112,19 @@ it("Succeeds initiating authenticating for the first time", async () => {
   const provider = new NordigenProvider({ id: providerID });
 
   const getAgreementsSpy = jest
-    .spyOn(provider.client.api.agreement, "getAgreements")
+    .spyOn(nordigenApi.agreement, "getAgreements")
     .mockResolvedValue({
       results: [],
     });
 
   const getRequisitionsSpy = jest
-    .spyOn(provider.client.api.requisition, "getRequisitions")
+    .spyOn(nordigenApi.requisition, "getRequisitions")
     .mockResolvedValue({
       results: [],
     });
 
   const createRequisitionsSpy = jest
-    .spyOn(provider.client.api.requisition, "createRequisition")
+    .spyOn(nordigenApi.requisition, "createRequisition")
     .mockResolvedValue({
       ...nordigen.requisition_1,
       institution_id: providerID,
@@ -144,7 +146,7 @@ it("Succeds initiating authentication if incompleted authentication exists. Retu
   const provider = new NordigenProvider({ id: providerID });
 
   const getAgreementsSpy = jest
-    .spyOn(provider.client.api.agreement, "getAgreements")
+    .spyOn(nordigenApi.agreement, "getAgreements")
     .mockResolvedValue({
       results: [
         {
@@ -155,7 +157,7 @@ it("Succeds initiating authentication if incompleted authentication exists. Retu
     });
 
   const getRequisitionsSpy = jest
-    .spyOn(provider.client.api.requisition, "getRequisitions")
+    .spyOn(nordigenApi.requisition, "getRequisitions")
     .mockResolvedValue({
       results: [
         {
@@ -180,7 +182,7 @@ it("Fails authenticating if completed and valid authentication exists", async ()
   const provider = new NordigenProvider({ id: providerID });
 
   const getAgreementsSpy = jest
-    .spyOn(provider.client.api.agreement, "getAgreements")
+    .spyOn(nordigenApi.agreement, "getAgreements")
     .mockResolvedValue({
       results: [
         {
@@ -191,7 +193,7 @@ it("Fails authenticating if completed and valid authentication exists", async ()
     });
 
   const getRequisitionsSpy = jest
-    .spyOn(provider.client.api.requisition, "getRequisitions")
+    .spyOn(nordigenApi.requisition, "getRequisitions")
     .mockResolvedValue({
       results: [
         {
@@ -214,13 +216,13 @@ it("Fails deleting authentication if it doesnt exist", async () => {
   const provider = new NordigenProvider({ id: providerID });
 
   const getAgreementsSpy = jest
-    .spyOn(provider.client.api.agreement, "getAgreements")
+    .spyOn(nordigenApi.agreement, "getAgreements")
     .mockResolvedValue({
       results: [],
     });
 
   const getRequisitionsSpy = jest
-    .spyOn(provider.client.api.requisition, "getRequisitions")
+    .spyOn(nordigenApi.requisition, "getRequisitions")
     .mockResolvedValue({
       results: [],
     });
@@ -237,7 +239,7 @@ it("Succeds deleting existing authentication", async () => {
   const provider = new NordigenProvider({ id: providerID });
 
   const getAgreementsSpy = jest
-    .spyOn(provider.client.api.agreement, "getAgreements")
+    .spyOn(nordigenApi.agreement, "getAgreements")
     .mockResolvedValue({
       results: [
         {
@@ -248,7 +250,7 @@ it("Succeds deleting existing authentication", async () => {
     });
 
   const getRequisitionsSpy = jest
-    .spyOn(provider.client.api.requisition, "getRequisitions")
+    .spyOn(nordigenApi.requisition, "getRequisitions")
     .mockResolvedValue({
       results: [
         {

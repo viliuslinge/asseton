@@ -2,9 +2,11 @@ import request from "supertest";
 
 import { api } from "src/api";
 import { ServerApiError } from "src/errors";
-import { TEST_PROVIDER_ID } from "src/config";
+import { DATA_SNAPSHOT_REFRESH_INTERVAL, TEST_PROVIDER_ID } from "src/config";
+import { NordginenApiTypes, nordigenApi } from "providers/Nordigen/NordigenApi";
+import { db, DatabaseTypes } from "database";
 
-import { database } from "./mocks";
+import { database, nordigen } from "./mocks";
 
 it("Fails getting data of not existing provider", async () => {
   const providerID = "doesnt-exist";
@@ -28,81 +30,316 @@ it("Fails getting data of existing provider if authentication doesnt exist", asy
   expect(received.body.code).toEqual(error.code);
 });
 
-// jest.mock("../providers/Nordigen/NordigenApi", () => {
-//   return {
-//     NordigenApi: (
-//       jest.fn() as jest.Mock<IDeepPartial<NordigenApi>>
-//     ).mockImplementation(() => {
-//       return {
-//         generateToken: () => new Promise((res) => res({})),
-//         agreement: {
-//           getAgreements: (): Promise<NordginenApiTypes.IAgreements> => {
-//             return new Promise((res) => {
-//               return res({
-//                 results: [
-//                   {
-//                     ...nordigen.agreement_1,
-//                     institution_id: TEST_PROVIDER_ID,
-//                   },
-//                 ],
-//               });
-//             });
-//           },
-//         },
-//         requisition: {
-//           getRequisitions: (): Promise<NordginenApiTypes.IRequisitions> => {
-//             return new Promise((res) => {
-//               return res({
-//                 results: [
-//                   {
-//                     ...nordigen.requisition_1,
-//                     institution_id: TEST_PROVIDER_ID,
-//                     status: "LN",
-//                   },
-//                 ],
-//               });
-//             });
-//           },
-//         },
-//         account: (): Partial<AccountApi> => {
-//           return {
-//             getBalances: (): Promise<NordginenApiTypes.IBalances> => {
-//               return new Promise((res) => {
-//                 return res(nordigen.balances_1);
-//               });
-//             },
-//           };
-//         },
-//       };
-//     }),
-//   };
-// });
-
 it("Succeeds getting data of existing provider if authentication exists", async () => {
   const providerID = TEST_PROVIDER_ID;
 
-  const receiveid = await request(api).get(
+  const getAgreementsSpy = jest
+    .spyOn(nordigenApi.agreement, "getAgreements")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.agreement_1,
+          institution_id: TEST_PROVIDER_ID,
+        },
+      ],
+    });
+
+  const getRequisitionsSpy = jest
+    .spyOn(nordigenApi.requisition, "getRequisitions")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.requisition_1,
+          institution_id: TEST_PROVIDER_ID,
+          status: "LN",
+        },
+      ],
+    });
+
+  const received = await request(api).get(
     `/providers/${providerID}/dataSnapshot`
   );
-  const expected = database.data_snapshot_1;
 
-  expect(receiveid.body).toEqual(expected);
+  const expected = {
+    id: database.data_snapshot_1.id,
+    accounts: database.data_snapshot_1.accounts,
+  };
+
+  expect(received.body).toEqual(expect.objectContaining(expected));
+
+  getAgreementsSpy.mockRestore();
+  getRequisitionsSpy.mockRestore();
 });
 
-// it("Succeeds getting cached data of existing provider if authentication exists", async () => {});
+it("Succeeds getting cached data of existing provider if authentication exists", async () => {
+  const providerID = TEST_PROVIDER_ID;
 
-// it("Succeeds getting refreshed data of existing provider if authentication exists", async () => {});
+  const getAgreementsSpy = jest
+    .spyOn(nordigenApi.agreement, "getAgreements")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.agreement_1,
+          institution_id: TEST_PROVIDER_ID,
+        },
+      ],
+    });
 
-// it("Fails authentication of not existing provider", async () => {});
+  const getRequisitionsSpy = jest
+    .spyOn(nordigenApi.requisition, "getRequisitions")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.requisition_1,
+          institution_id: TEST_PROVIDER_ID,
+          status: "LN",
+        },
+      ],
+    });
 
-// it("Fails authentication if completed and valid authentication exists", async () => {});
+  const expected: DatabaseTypes.IProviderData = {
+    id: TEST_PROVIDER_ID,
+    createdAt: new Date().toISOString(),
+    accounts: [
+      {
+        assets: [
+          {
+            symbol: "EUR",
+            amount: 10,
+          },
+        ],
+      },
+    ],
+  };
 
-// it("Succeeds initiating authenticating for the first time", async () => {});
+  const getProviderDataSnapshotSpy = jest
+    .spyOn(db, "getProviderDataSnapshot")
+    .mockResolvedValue(expected);
 
-// it("Succeds initiating authentication if incompleted authentication exists. Returns existing authentication", async () => {});
+  const received = await request(api).get(
+    `/providers/${providerID}/dataSnapshot`
+  );
 
-// it("Fails deleting authentication of not existing provider", async () => {});
+  expect(received.body).toEqual(expect.objectContaining(expected));
 
-// it("Fails deleting authentication of authentication doesnt exist", async () => {});
+  getAgreementsSpy.mockRestore();
+  getRequisitionsSpy.mockRestore();
+  getProviderDataSnapshotSpy.mockRestore();
+});
 
-// it("Succeeds deleting authentication if authentication exists", async () => {});
+it("Succeeds getting refreshed data of existing provider if authentication exists", async () => {
+  const providerID = TEST_PROVIDER_ID;
+
+  const getAgreementsSpy = jest
+    .spyOn(nordigenApi.agreement, "getAgreements")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.agreement_1,
+          institution_id: TEST_PROVIDER_ID,
+        },
+      ],
+    });
+
+  const getRequisitionsSpy = jest
+    .spyOn(nordigenApi.requisition, "getRequisitions")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.requisition_1,
+          institution_id: TEST_PROVIDER_ID,
+          status: "LN",
+        },
+      ],
+    });
+
+  const outdatedSnapshot: DatabaseTypes.IProviderData = {
+    id: TEST_PROVIDER_ID,
+    createdAt: new Date(
+      new Date().getTime() - DATA_SNAPSHOT_REFRESH_INTERVAL * 2
+    ).toISOString(),
+    accounts: [
+      {
+        assets: [
+          {
+            symbol: "EUR",
+            amount: 10,
+          },
+        ],
+      },
+    ],
+  };
+
+  const getProviderDataSnapshotSpy = jest
+    .spyOn(db, "getProviderDataSnapshot")
+    .mockResolvedValue(outdatedSnapshot);
+
+  const received = await request(api).get(
+    `/providers/${providerID}/dataSnapshot`
+  );
+
+  expect(received.body).toEqual(
+    expect.objectContaining({
+      id: database.data_snapshot_1.id,
+      accounts: database.data_snapshot_1.accounts,
+    })
+  );
+
+  getAgreementsSpy.mockRestore();
+  getRequisitionsSpy.mockRestore();
+  getProviderDataSnapshotSpy.mockRestore();
+});
+
+it("Fails authentication of not existing provider", async () => {
+  const providerID = "doesnt-exist";
+  const error = ServerApiError.ProviderNotFound();
+  const received = await request(api)
+    .post(`/providers/${providerID}/authentication`)
+    .send({
+      redirectUrl: "https://google.com",
+    });
+
+  expect(received.statusCode).toEqual(error.statusCode);
+  expect(received.body.code).toEqual(error.code);
+});
+
+it("Fails authentication if completed and valid authentication exists", async () => {
+  const providerID = TEST_PROVIDER_ID;
+  const error = ServerApiError.AuthenticationExists();
+
+  const getAgreementsSpy = jest
+    .spyOn(nordigenApi.agreement, "getAgreements")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.agreement_1,
+          institution_id: TEST_PROVIDER_ID,
+        },
+      ],
+    });
+
+  const getRequisitionsSpy = jest
+    .spyOn(nordigenApi.requisition, "getRequisitions")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.requisition_1,
+          institution_id: TEST_PROVIDER_ID,
+          status: "LN",
+        },
+      ],
+    });
+
+  const received = await request(api)
+    .post(`/providers/${providerID}/authentication`)
+    .send({
+      redirectUrl: "https://google.com",
+    });
+
+  expect(received.statusCode).toEqual(error.statusCode);
+  expect(received.body.code).toEqual(error.code);
+
+  getAgreementsSpy.mockRestore();
+  getRequisitionsSpy.mockRestore();
+});
+
+it("Succeeds initiating authentication for the first time", async () => {
+  const providerID = TEST_PROVIDER_ID;
+  const received = await request(api)
+    .post(`/providers/${providerID}/authentication`)
+    .send({
+      redirectUrl: "https://google.com",
+    });
+
+  expect(received.body).toEqual({
+    authenticationUrl: nordigen.requisition_1.link,
+  });
+});
+
+it("Succeeds initiating authentication if incompleted authentication exists. Returns existing authentication", async () => {
+  const providerID = TEST_PROVIDER_ID;
+
+  const getAgreementsSpy = jest
+    .spyOn(nordigenApi.agreement, "getAgreements")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.agreement_1,
+          institution_id: TEST_PROVIDER_ID,
+        },
+      ],
+    });
+
+  const expected: NordginenApiTypes.IRequisition = {
+    ...nordigen.requisition_1,
+    institution_id: TEST_PROVIDER_ID,
+    status: "CR",
+    link: "https://new-link.com",
+  };
+
+  const getRequisitionsSpy = jest
+    .spyOn(nordigenApi.requisition, "getRequisitions")
+    .mockResolvedValue({
+      results: [expected],
+    });
+
+  const received = await request(api)
+    .post(`/providers/${providerID}/authentication`)
+    .send({
+      redirectUrl: "https://google.com",
+    });
+
+  expect(received.body).toEqual({
+    authenticationUrl: expected.link,
+  });
+
+  getAgreementsSpy.mockRestore();
+  getRequisitionsSpy.mockRestore();
+});
+
+it("Fails deleting authentication of not existing provider", async () => {
+  const providerID = "doesnt-exist";
+  const error = ServerApiError.ProviderNotFound();
+  const received = await request(api).delete(
+    `/providers/${providerID}/authentication`
+  );
+
+  expect(received.statusCode).toEqual(error.statusCode);
+  expect(received.body.code).toEqual(error.code);
+});
+
+it("Succeeds deleting authentication if authentication exists", async () => {
+  const providerID = TEST_PROVIDER_ID;
+
+  const getAgreementsSpy = jest
+    .spyOn(nordigenApi.agreement, "getAgreements")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.agreement_1,
+          institution_id: TEST_PROVIDER_ID,
+        },
+      ],
+    });
+
+  const getRequisitionsSpy = jest
+    .spyOn(nordigenApi.requisition, "getRequisitions")
+    .mockResolvedValue({
+      results: [
+        {
+          ...nordigen.requisition_1,
+          institution_id: TEST_PROVIDER_ID,
+          status: "LN",
+        },
+      ],
+    });
+
+  const received = await request(api).delete(
+    `/providers/${providerID}/authentication`
+  );
+
+  expect(received.body).toEqual(true);
+
+  getAgreementsSpy.mockRestore();
+  getRequisitionsSpy.mockRestore();
+});

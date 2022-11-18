@@ -2,16 +2,12 @@ import express, { Response } from "express";
 import bodyParser from "body-parser";
 
 import { providerFactory, AuthenticatedProvider } from "providers";
-import {
-  Database,
-  DatabaseTypes,
-  isDataSnapshotRefreshRequired,
-} from "database";
+import { db, DatabaseTypes } from "database";
+import { isDataSnapshotRefreshRequired } from "database/utils";
 
 import { ServerApiError } from "./errors";
 import { API_ROUTES } from "./config";
 
-const db = new Database();
 export const api = express();
 
 api.use(bodyParser.json());

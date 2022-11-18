@@ -22,7 +22,7 @@ interface IRequisition {
 }
 
 export class NordigenProvider extends AuthenticatedProvider {
-  client: NordigenClient;
+  private client: NordigenClient;
 
   constructor(input: IProviderInput) {
     super(input);
@@ -118,8 +118,6 @@ export class NordigenProvider extends AuthenticatedProvider {
 
     const allRequisitions: NordginenApiTypes.IRequisitions =
       await this.client.getRequisitions();
-
-    console.log(allRequisitions);
 
     const result = findProviderRequisition({
       providerID: this.id,

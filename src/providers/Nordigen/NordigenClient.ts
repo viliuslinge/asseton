@@ -1,39 +1,32 @@
-import * as dotenv from "dotenv";
+// import * as dotenv from "dotenv";
 
 import { ServerApiError } from "src/errors";
 
-import { NordigenApi, NordginenApiTypes } from "./NordigenApi";
+import { NordginenApiTypes, nordigenApi } from "./NordigenApi";
 
-dotenv.config();
+// dotenv.config();
 
-const secretId = process.env.NORDIGEN_API_ID ?? "";
-const secretKey = process.env.NORDIGEN_API_KEY ?? "";
+// const secretId = process.env.NORDIGEN_API_ID ?? "";
+// const secretKey = process.env.NORDIGEN_API_KEY ?? "";
 
 export class NordigenClient {
-  api: NordigenApi;
-
-  constructor() {
-    this.api = new NordigenApi({
-      secretId,
-      secretKey,
-    });
-  }
-
   generateToken = async () => {
-    return this.intercept((await this.api.generateToken()) as any);
+    return this.intercept((await nordigenApi.generateToken()) as any);
   };
 
   getRequisitions = async (input?: {
     limit?: number;
     offset?: number;
   }): Promise<NordginenApiTypes.IRequisitions> => {
-    return this.intercept(await this.api.requisition.getRequisitions(input));
+    return this.intercept(await nordigenApi.requisition.getRequisitions(input));
   };
 
   getRequisitionById = async (
     input: string
   ): Promise<NordginenApiTypes.IRequisition> => {
-    return this.intercept(await this.api.requisition.getRequisitionById(input));
+    return this.intercept(
+      await nordigenApi.requisition.getRequisitionById(input)
+    );
   };
 
   createRequisition = async (input: {
@@ -43,26 +36,30 @@ export class NordigenClient {
     userLanguage?: string;
     reference: string;
   }): Promise<NordginenApiTypes.IRequisition> => {
-    return this.intercept(await this.api.requisition.createRequisition(input));
+    return this.intercept(
+      await nordigenApi.requisition.createRequisition(input)
+    );
   };
 
   deleteRequisition = async (
     input: string
   ): Promise<NordginenApiTypes.IDeleteRequisitionOutput> => {
-    return this.intercept(await this.api.requisition.deleteRequisition(input));
+    return this.intercept(
+      await nordigenApi.requisition.deleteRequisition(input)
+    );
   };
 
   getAgreements = async (input?: {
     limit?: number;
     offset?: number;
   }): Promise<NordginenApiTypes.IAgreements> => {
-    return this.intercept(await this.api.agreement.getAgreements(input));
+    return this.intercept(await nordigenApi.agreement.getAgreements(input));
   };
 
   getAgreementById = async (
     input: string
   ): Promise<NordginenApiTypes.IAgreement> => {
-    return this.intercept(await this.api.agreement.getAgreementById(input));
+    return this.intercept(await nordigenApi.agreement.getAgreementById(input));
   };
 
   createAgreement = async (input: {
@@ -71,7 +68,7 @@ export class NordigenClient {
     accessValidForDays?: number;
     accessScope?: string[];
   }): Promise<NordginenApiTypes.IAgreement> => {
-    return this.intercept(await this.api.agreement.createAgreement(input));
+    return this.intercept(await nordigenApi.agreement.createAgreement(input));
   };
 
   account = (
@@ -79,7 +76,7 @@ export class NordigenClient {
   ): {
     getBalances: () => Promise<NordginenApiTypes.IBalances>;
   } => {
-    const account = this.api.account(input);
+    const account = nordigenApi.account(input);
 
     return {
       getBalances: async () => this.intercept(await account.getBalances()),

@@ -4,7 +4,7 @@ import { TEST_PROVIDER_ID } from "src/config";
 
 const agreement_1: NordginenApiTypes.IAgreement = {
   id: "a1",
-  created: "2022-11-18T09:51:24.810Z",
+  created: new Date().toISOString(),
   max_historical_days: 10,
   access_valid_for_days: 2,
   access_scope: [],
@@ -13,7 +13,7 @@ const agreement_1: NordginenApiTypes.IAgreement = {
 
 const requisition_1: NordginenApiTypes.IRequisition = {
   id: "r1",
-  created: "2022-11-18T09:51:24.810Z",
+  created: new Date().toISOString(),
   redirect: "https://google.com",
   status: "CR",
   institution_id: TEST_PROVIDER_ID,
@@ -34,14 +34,14 @@ const balances_1: NordginenApiTypes.IBalances = {
         currency: "EUR",
       },
       balanceType: "",
-      referenceDate: "2022-11-18T09:51:24.810Z",
+      referenceDate: new Date().toISOString(),
     },
   ],
 };
 
 const data_snapshot_1: DatabaseTypes.IProviderData = {
   id: TEST_PROVIDER_ID,
-  createdAt: "2022-11-18T09:51:24.810Z",
+  createdAt: new Date().toISOString(),
   accounts: [
     {
       assets: [

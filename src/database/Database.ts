@@ -7,8 +7,6 @@ import {
   getDoc,
 } from "firebase/firestore";
 
-import { DATA_SNAPSHOT_REFRESH_INTERVAL } from "src/config";
-
 import { DatabaseTypes } from "./types";
 import { firebaseConfig } from "./firebaseConfig";
 
