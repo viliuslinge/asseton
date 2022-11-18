@@ -1,4 +1,4 @@
-export namespace NordginenTypes {
+export namespace NordginenApiTypes {
   export interface IMetadata {
     id: string;
     created: string;
@@ -78,6 +78,10 @@ export namespace NordginenTypes {
     ssn: string | null;
     account_selection: boolean;
     redirect_immediate: boolean;
+  }
+
+  export interface IDeleteRequisitionOutput {
+    message: string;
   }
 
   export interface IAgreements {

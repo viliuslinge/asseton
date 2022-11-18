@@ -1,9 +1,9 @@
 import { ServerApiError } from "src/errors.js";
 
 import { IProvider, IProviderInput } from "./Provider";
-import { BitfinexProvider } from "./BitfinexProvider";
-import { KrakenProvider } from "./KrakenProvider";
-import { NordigenProvider } from "./NordigenProvider";
+import { BitfinexProvider } from "./Bitfinex";
+import { KrakenProvider } from "./Kraken";
+import { NordigenProvider } from "./Nordigen";
 
 export const providerFactory = {
   createProvider: (input: IProviderInput): IProvider => {

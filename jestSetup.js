@@ -1,1 +1,2 @@
-jest.mock("src/providers/NordigenProvider/NordigenClientRaw");
+jest.mock("src/providers/Nordigen/NordigenApi");
+jest.mock("src/database/Database");

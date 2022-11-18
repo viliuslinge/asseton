@@ -16,6 +16,7 @@
     "esModuleInterop": true,
     "paths": {
       "src/*": ["src/*"],
+      "tests/*": ["src/tests/*"],
       "database": ["src/database"],
       "database/*": ["src/database/*"],
       "providers": ["src/providers"],

@@ -11,7 +11,7 @@ import {
 } from "../Provider";
 
 import { NordigenClient } from "./NordigenClient";
-import { NordginenTypes } from "./types";
+import { NordginenApiTypes } from "./NordigenApi";
 
 interface IRequisition {
   id: string;
@@ -46,9 +46,10 @@ export class NordigenProvider extends AuthenticatedProvider {
     };
 
     for (let accountID of requisition.accountIDs) {
-      const { balances }: NordginenTypes.IBalances = await this.client
+      const { balances }: NordginenApiTypes.IBalances = await this.client
         .account(accountID)
         .getBalances();
+
       const account: DatabaseTypes.IAccount = {
         assets: [],
       };
@@ -72,14 +73,14 @@ export class NordigenProvider extends AuthenticatedProvider {
     let requisition = await this.getExistingRequisition();
 
     if (!requisition) {
-      const agreement: NordginenTypes.IAgreement =
+      const agreement: NordginenApiTypes.IAgreement =
         await this.client.createAgreement({
           institutionId: this.id,
           maxHistoricalDays: 30,
           accessValidForDays: 1,
         });
 
-      const req: NordginenTypes.IRequisition =
+      const req: NordginenApiTypes.IRequisition =
         await this.client.createRequisition({
           redirectUrl: input.redirectUrl,
           institutionId: this.id,
@@ -111,16 +112,16 @@ export class NordigenProvider extends AuthenticatedProvider {
   private getExistingRequisition = async (): Promise<
     IRequisition | undefined
   > => {
-    const allAgreements: NordginenTypes.IAgreements =
+    const allAgreements: NordginenApiTypes.IAgreements =
       await this.client.getAgreements();
 
-    const providerAgreements: NordginenTypes.IAgreement[] =
+    const providerAgreements: NordginenApiTypes.IAgreement[] =
       allAgreements.results.filter((it) => it.institution_id === this.id);
 
-    const allRequisitions: NordginenTypes.IRequisitions =
+    const allRequisitions: NordginenApiTypes.IRequisitions =
       await this.client.getRequisitions();
 
-    const providerRequisitions: NordginenTypes.IRequisition[] =
+    const providerRequisitions: NordginenApiTypes.IRequisition[] =
       allRequisitions.results
         .filter((it) => it.institution_id === this.id)
         .sort(
@@ -128,7 +129,7 @@ export class NordigenProvider extends AuthenticatedProvider {
             new Date(b.created).getTime() - new Date(a.created).getTime()
         );
 
-    const validProviderRequisitions: NordginenTypes.IRequisition[] =
+    const validProviderRequisitions: NordginenApiTypes.IRequisition[] =
       providerRequisitions.filter((it) => {
         const agreement = providerAgreements.find(
           (agr) => agr.id === it.agreement
@@ -157,10 +158,10 @@ export class NordigenProvider extends AuthenticatedProvider {
   };
 
   private transformRequisition = (
-    requisition: NordginenTypes.IRequisition
+    requisition: NordginenApiTypes.IRequisition
   ): IRequisition => {
     function transformStatus(
-      status: NordginenTypes.IRequisition["status"]
+      status: NordginenApiTypes.IRequisition["status"]
     ): IRequisition["status"] {
       switch (status) {
         case "CR":
@@ -179,7 +180,7 @@ export class NordigenProvider extends AuthenticatedProvider {
   };
 
   private isAgreementValid = (
-    agreement: NordginenTypes.IAgreement
+    agreement: NordginenApiTypes.IAgreement
   ): boolean => {
     const timeNow = new Date().getTime();
     const validUntil =
