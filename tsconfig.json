@@ -17,6 +17,7 @@
     "paths": {
       "src/*": ["src/*"],
       "tests/*": ["src/tests/*"],
+      "controllers/*": ["src/controllers/*"],
       "database": ["src/database"],
       "database/*": ["src/database/*"],
       "providers": ["src/providers"],

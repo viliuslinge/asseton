@@ -1,6 +1,6 @@
 import request from "supertest";
 
-import { api } from "src/api";
+import { router } from "src/router";
 import { ServerApiError } from "src/errors";
 import {
   DATA_SNAPSHOT_REFRESH_INTERVAL,
@@ -15,7 +15,7 @@ import { database, nordigen } from "./mocks";
 it("Fails getting data of not existing provider", async () => {
   const providerID = "doesnt-exist";
   const error = ServerApiError.ProviderNotFound();
-  const received = await request(api).get(
+  const received = await request(router).get(
     `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
@@ -26,7 +26,7 @@ it("Fails getting data of not existing provider", async () => {
 it("Fails getting data of existing provider if authentication doesnt exist", async () => {
   const providerID = TEST_PROVIDER_ID;
   const error = ServerApiError.AuthenticationRequired();
-  const received = await request(api).get(
+  const received = await request(router).get(
     `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
@@ -60,7 +60,7 @@ it("Succeeds getting data of existing provider if authentication exists", async 
       ],
     });
 
-  const received = await request(api).get(
+  const received = await request(router).get(
     `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
@@ -120,7 +120,7 @@ it("Succeeds getting cached data of existing provider if authentication exists",
     .spyOn(db, "getProviderDataSnapshot")
     .mockResolvedValue(expected);
 
-  const received = await request(api).get(
+  const received = await request(router).get(
     `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
@@ -178,7 +178,7 @@ it("Succeeds getting refreshed data of existing provider if authentication exist
     .spyOn(db, "getProviderDataSnapshot")
     .mockResolvedValue(outdatedSnapshot);
 
-  const received = await request(api).get(
+  const received = await request(router).get(
     `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
@@ -197,7 +197,7 @@ it("Succeeds getting refreshed data of existing provider if authentication exist
 it("Fails authentication of not existing provider", async () => {
   const providerID = "doesnt-exist";
   const error = ServerApiError.ProviderNotFound();
-  const received = await request(api)
+  const received = await request(router)
     .post(`/api/${API_VERSION}/providers/${providerID}/authentication`)
     .send({
       redirectUrl: "https://google.com",
@@ -234,7 +234,7 @@ it("Fails authentication if completed and valid authentication exists", async ()
       ],
     });
 
-  const received = await request(api)
+  const received = await request(router)
     .post(`/api/${API_VERSION}/providers/${providerID}/authentication`)
     .send({
       redirectUrl: "https://google.com",
@@ -249,7 +249,7 @@ it("Fails authentication if completed and valid authentication exists", async ()
 
 it("Succeeds initiating authentication for the first time", async () => {
   const providerID = TEST_PROVIDER_ID;
-  const received = await request(api)
+  const received = await request(router)
     .post(`/api/${API_VERSION}/providers/${providerID}/authentication`)
     .send({
       redirectUrl: "https://google.com",
@@ -287,7 +287,7 @@ it("Succeeds initiating authentication if incompleted authentication exists. Ret
       results: [expected],
     });
 
-  const received = await request(api)
+  const received = await request(router)
     .post(`/api/${API_VERSION}/providers/${providerID}/authentication`)
     .send({
       redirectUrl: "https://google.com",
@@ -304,7 +304,7 @@ it("Succeeds initiating authentication if incompleted authentication exists. Ret
 it("Fails deleting authentication of not existing provider", async () => {
   const providerID = "doesnt-exist";
   const error = ServerApiError.ProviderNotFound();
-  const received = await request(api).delete(
+  const received = await request(router).delete(
     `/api/${API_VERSION}/providers/${providerID}/authentication`
   );
 
@@ -338,7 +338,7 @@ it("Succeeds deleting authentication if authentication exists", async () => {
       ],
     });
 
-  const received = await request(api).delete(
+  const received = await request(router).delete(
     `/api/${API_VERSION}/providers/${providerID}/authentication`
   );
 

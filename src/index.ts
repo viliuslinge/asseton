@@ -1,6 +1,6 @@
-import { api } from "./api";
+import { router } from "./router";
 import { API_PORT } from "./config";
 
-api.listen(API_PORT, () => {
+router.listen(API_PORT, () => {
   console.log(`[HTTP_SERVER] listening on port ${API_PORT}`);
 });
