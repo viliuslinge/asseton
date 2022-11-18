@@ -2,17 +2,12 @@ import NordigenApiRaw from "nordigen-node";
 import { AccountApi } from "nordigen-node/types/api";
 
 import { nordigen } from "tests/mocks";
+import { IDeepPartial } from "src/utils";
 
 import { NordginenApiTypes } from "../types";
 
-type DeepPartial<T> = T extends object
-  ? {
-      [P in keyof T]?: DeepPartial<T[P]>;
-    }
-  : T;
-
 export const NordigenApi = (
-  jest.fn() as jest.Mock<DeepPartial<NordigenApiRaw>>
+  jest.fn() as jest.Mock<IDeepPartial<NordigenApiRaw>>
 ).mockImplementation(() => {
   return {
     generateToken: () => new Promise((res) => res({})),

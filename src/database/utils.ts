@@ -1,4 +1,4 @@
-import { DATA_SNAPSHOT_REFRESH_INTERVAL } from "src/const";
+import { DATA_SNAPSHOT_REFRESH_INTERVAL } from "src/config";
 
 export function isDataSnapshotRefreshRequired(createdAt: string): boolean {
   const prevTimestamp = new Date(createdAt).getTime();

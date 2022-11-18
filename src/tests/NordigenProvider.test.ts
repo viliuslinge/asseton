@@ -1,5 +1,6 @@
 import { DatabaseTypes } from "database";
 import { ServerApiError } from "src/errors";
+import { TEST_PROVIDER_ID } from "src/config";
 import { IProviderAuthentication } from "providers/Provider";
 import { NordigenProvider } from "providers/Nordigen/NordigenProvider";
 import { AccountApi, NordginenApiTypes } from "providers/Nordigen/NordigenApi";
@@ -7,7 +8,7 @@ import { findProviderRequisition } from "providers/Nordigen/utils";
 
 import { nordigen } from "./mocks";
 
-const providerID = "nordigen";
+const providerID = TEST_PROVIDER_ID;
 
 it("Fails getting data snapshot without authentication", async () => {
   const provider = new NordigenProvider({ id: providerID });

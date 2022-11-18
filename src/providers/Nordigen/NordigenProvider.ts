@@ -119,6 +119,8 @@ export class NordigenProvider extends AuthenticatedProvider {
     const allRequisitions: NordginenApiTypes.IRequisitions =
       await this.client.getRequisitions();
 
+    console.log(allRequisitions);
+
     const result = findProviderRequisition({
       providerID: this.id,
       agreements: allAgreements,

@@ -1,21 +1,22 @@
 import { DatabaseTypes } from "database";
 import { NordginenApiTypes } from "providers/Nordigen/NordigenApi";
+import { TEST_PROVIDER_ID } from "src/config";
 
 const agreement_1: NordginenApiTypes.IAgreement = {
   id: "a1",
-  created: new Date().toISOString(),
+  created: "2022-11-18T09:51:24.810Z",
   max_historical_days: 10,
   access_valid_for_days: 2,
   access_scope: [],
-  institution_id: "nordigen",
+  institution_id: TEST_PROVIDER_ID,
 };
 
 const requisition_1: NordginenApiTypes.IRequisition = {
   id: "r1",
-  created: new Date().toISOString(),
+  created: "2022-11-18T09:51:24.810Z",
   redirect: "https://google.com",
   status: "CR",
-  institution_id: "nordigen",
+  institution_id: TEST_PROVIDER_ID,
   agreement: "a1",
   reference: "",
   accounts: ["acc1"],
@@ -33,14 +34,14 @@ const balances_1: NordginenApiTypes.IBalances = {
         currency: "EUR",
       },
       balanceType: "",
-      referenceDate: new Date().toISOString(),
+      referenceDate: "2022-11-18T09:51:24.810Z",
     },
   ],
 };
 
 const data_snapshot_1: DatabaseTypes.IProviderData = {
-  id: "provider-1",
-  createdAt: new Date().toISOString(),
+  id: TEST_PROVIDER_ID,
+  createdAt: "2022-11-18T09:51:24.810Z",
   accounts: [
     {
       assets: [
