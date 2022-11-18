@@ -6,11 +6,13 @@ import { db, DatabaseTypes } from "database";
 import { isDataSnapshotRefreshRequired } from "database/utils";
 
 import { ServerApiError } from "./errors";
-import { API_ROUTES } from "./config";
+import { API_ROUTES, API_TEST_ROUTES } from "./config";
 
 export const api = express();
 
 api.use(bodyParser.json());
+
+// API ROUTES
 
 api.get<{ providerID: string }, DatabaseTypes.IProviderData | Error>(
   API_ROUTES.PROVIDER_SNAPSHOT,
@@ -71,6 +73,58 @@ api.delete<{ providerID: string }, true | Error>(
     } catch (err) {
       sendError(res, err as Error);
     }
+  }
+);
+
+// TEST API ROUTES
+
+api.get<{ providerID: string }, DatabaseTypes.IProviderData | Error>(
+  API_TEST_ROUTES.PROVIDER_SNAPSHOT,
+  async (req, res) => {
+    const { providerID } = req.params;
+    const data: DatabaseTypes.IProviderData = {
+      id: providerID,
+      createdAt: new Date().toISOString(),
+      accounts: [
+        {
+          assets: [
+            {
+              symbol: "EUR",
+              amount: 1000,
+            },
+            {
+              symbol: "USD",
+              amount: 50000,
+            },
+          ],
+        },
+        {
+          assets: [
+            {
+              symbol: "EUR",
+              amount: 3,
+            },
+          ],
+        },
+      ],
+    };
+
+    res.send(data);
+  }
+);
+
+api.post<
+  { providerID: string },
+  { authenticationUrl: string } | Error,
+  { redirectUrl: string }
+>(API_TEST_ROUTES.PROVIDER_AUTHENTICATION, async (_, res) => {
+  res.send({ authenticationUrl: "https://testapiauthenticationurl.com" });
+});
+
+api.delete<{ providerID: string }, true | Error>(
+  API_TEST_ROUTES.PROVIDER_AUTHENTICATION,
+  async (_, res) => {
+    res.send(true);
   }
 );
 

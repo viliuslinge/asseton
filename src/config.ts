@@ -12,6 +12,10 @@ export const API_ROUTES = {
   PROVIDER_SNAPSHOT: `/api/${API_VERSION}/providers/:providerID/snapshot`,
   PROVIDER_AUTHENTICATION: `/api/${API_VERSION}/providers/:providerID/authentication`,
 };
+export const API_TEST_ROUTES = {
+  PROVIDER_SNAPSHOT: `/test-api/${API_VERSION}/providers/:providerID/snapshot`,
+  PROVIDER_AUTHENTICATION: `/test-api/${API_VERSION}/providers/:providerID/authentication`,
+};
 
 // Providers
 export const TEST_PROVIDER_ID = "REVOLUT_REVOGB21";
