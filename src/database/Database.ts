@@ -11,7 +11,7 @@ import { DatabaseTypes } from "./types";
 import { firebaseConfig } from "./firebaseConfig";
 
 enum COLLECTIONS {
-  PROVIDER_DATA_SNAPSHOTS = "providerDataSnapshots",
+  PROVIDER_SNAPSHOTS = "providerSnapshots",
 }
 
 export class Database {
@@ -25,7 +25,7 @@ export class Database {
     providerID: string
   ): Promise<DatabaseTypes.IProviderData | null> => {
     const docSnap = await getDoc(
-      doc(this.db, COLLECTIONS.PROVIDER_DATA_SNAPSHOTS, providerID)
+      doc(this.db, COLLECTIONS.PROVIDER_SNAPSHOTS, providerID)
     );
 
     return docSnap.exists()
@@ -37,7 +37,7 @@ export class Database {
     input: DatabaseTypes.IProviderData
   ): Promise<void> => {
     await setDoc(
-      doc(this.db, COLLECTIONS.PROVIDER_DATA_SNAPSHOTS, input.id),
+      doc(this.db, COLLECTIONS.PROVIDER_SNAPSHOTS, input.id),
       input,
       {
         merge: true,

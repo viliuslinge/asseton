@@ -2,7 +2,11 @@ import request from "supertest";
 
 import { api } from "src/api";
 import { ServerApiError } from "src/errors";
-import { DATA_SNAPSHOT_REFRESH_INTERVAL, TEST_PROVIDER_ID } from "src/config";
+import {
+  DATA_SNAPSHOT_REFRESH_INTERVAL,
+  TEST_PROVIDER_ID,
+  API_VERSION,
+} from "src/config";
 import { NordginenApiTypes, nordigenApi } from "providers/Nordigen/NordigenApi";
 import { db, DatabaseTypes } from "database";
 
@@ -12,7 +16,7 @@ it("Fails getting data of not existing provider", async () => {
   const providerID = "doesnt-exist";
   const error = ServerApiError.ProviderNotFound();
   const received = await request(api).get(
-    `/providers/${providerID}/dataSnapshot`
+    `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
   expect(received.statusCode).toEqual(error.statusCode);
@@ -23,7 +27,7 @@ it("Fails getting data of existing provider if authentication doesnt exist", asy
   const providerID = TEST_PROVIDER_ID;
   const error = ServerApiError.AuthenticationRequired();
   const received = await request(api).get(
-    `/providers/${providerID}/dataSnapshot`
+    `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
   expect(received.statusCode).toEqual(error.statusCode);
@@ -57,7 +61,7 @@ it("Succeeds getting data of existing provider if authentication exists", async 
     });
 
   const received = await request(api).get(
-    `/providers/${providerID}/dataSnapshot`
+    `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
   const expected = {
@@ -117,7 +121,7 @@ it("Succeeds getting cached data of existing provider if authentication exists",
     .mockResolvedValue(expected);
 
   const received = await request(api).get(
-    `/providers/${providerID}/dataSnapshot`
+    `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
   expect(received.body).toEqual(expect.objectContaining(expected));
@@ -175,7 +179,7 @@ it("Succeeds getting refreshed data of existing provider if authentication exist
     .mockResolvedValue(outdatedSnapshot);
 
   const received = await request(api).get(
-    `/providers/${providerID}/dataSnapshot`
+    `/api/${API_VERSION}/providers/${providerID}/snapshot`
   );
 
   expect(received.body).toEqual(
@@ -194,7 +198,7 @@ it("Fails authentication of not existing provider", async () => {
   const providerID = "doesnt-exist";
   const error = ServerApiError.ProviderNotFound();
   const received = await request(api)
-    .post(`/providers/${providerID}/authentication`)
+    .post(`/api/${API_VERSION}/providers/${providerID}/authentication`)
     .send({
       redirectUrl: "https://google.com",
     });
@@ -231,7 +235,7 @@ it("Fails authentication if completed and valid authentication exists", async ()
     });
 
   const received = await request(api)
-    .post(`/providers/${providerID}/authentication`)
+    .post(`/api/${API_VERSION}/providers/${providerID}/authentication`)
     .send({
       redirectUrl: "https://google.com",
     });
@@ -246,7 +250,7 @@ it("Fails authentication if completed and valid authentication exists", async ()
 it("Succeeds initiating authentication for the first time", async () => {
   const providerID = TEST_PROVIDER_ID;
   const received = await request(api)
-    .post(`/providers/${providerID}/authentication`)
+    .post(`/api/${API_VERSION}/providers/${providerID}/authentication`)
     .send({
       redirectUrl: "https://google.com",
     });
@@ -284,7 +288,7 @@ it("Succeeds initiating authentication if incompleted authentication exists. Ret
     });
 
   const received = await request(api)
-    .post(`/providers/${providerID}/authentication`)
+    .post(`/api/${API_VERSION}/providers/${providerID}/authentication`)
     .send({
       redirectUrl: "https://google.com",
     });
@@ -301,7 +305,7 @@ it("Fails deleting authentication of not existing provider", async () => {
   const providerID = "doesnt-exist";
   const error = ServerApiError.ProviderNotFound();
   const received = await request(api).delete(
-    `/providers/${providerID}/authentication`
+    `/api/${API_VERSION}/providers/${providerID}/authentication`
   );
 
   expect(received.statusCode).toEqual(error.statusCode);
@@ -335,7 +339,7 @@ it("Succeeds deleting authentication if authentication exists", async () => {
     });
 
   const received = await request(api).delete(
-    `/providers/${providerID}/authentication`
+    `/api/${API_VERSION}/providers/${providerID}/authentication`
   );
 
   expect(received.body).toEqual(true);

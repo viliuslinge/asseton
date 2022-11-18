@@ -13,7 +13,7 @@ export const api = express();
 api.use(bodyParser.json());
 
 api.get<{ providerID: string }, DatabaseTypes.IProviderData | Error>(
-  API_ROUTES.PROVIDER_DATA_SNAPSHOT,
+  API_ROUTES.PROVIDER_SNAPSHOT,
   async (req, res) => {
     try {
       const { providerID } = req.params;
