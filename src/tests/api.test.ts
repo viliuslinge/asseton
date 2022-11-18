@@ -7,7 +7,10 @@ import {
   TEST_PROVIDER_ID,
   API_VERSION,
 } from "src/config";
-import { NordginenApiTypes, nordigenApi } from "providers/Nordigen/NordigenApi";
+import {
+  NordginenApiTypes,
+  nordigenApi,
+} from "models/providers/Nordigen/NordigenApi";
 import { db, DatabaseTypes } from "database";
 
 import { database, nordigen } from "./mocks";

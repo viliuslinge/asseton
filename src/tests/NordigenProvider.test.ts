@@ -1,14 +1,14 @@
 import { DatabaseTypes } from "database";
 import { ServerApiError } from "src/errors";
 import { TEST_PROVIDER_ID } from "src/config";
-import { IProviderAuthentication } from "providers/Provider";
-import { NordigenProvider } from "providers/Nordigen/NordigenProvider";
+import { IProviderAuthentication } from "models/providers/Provider";
+import { NordigenProvider } from "models/providers/Nordigen/NordigenProvider";
 import {
   AccountApi,
   NordginenApiTypes,
   nordigenApi,
-} from "providers/Nordigen/NordigenApi";
-import { findProviderRequisition } from "providers/Nordigen/utils";
+} from "models/providers/Nordigen/NordigenApi";
+import { findProviderRequisition } from "models/providers/Nordigen/utils";
 
 import { nordigen } from "./mocks";
 

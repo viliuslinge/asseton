@@ -1,5 +1,5 @@
 import { DatabaseTypes } from "database";
-import { NordginenApiTypes } from "providers/Nordigen/NordigenApi";
+import { NordginenApiTypes } from "models/providers/Nordigen/NordigenApi";
 import { TEST_PROVIDER_ID } from "src/config";
 
 const agreement_1: NordginenApiTypes.IAgreement = {

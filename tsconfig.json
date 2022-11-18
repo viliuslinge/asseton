@@ -20,8 +20,7 @@
       "controllers/*": ["src/controllers/*"],
       "database": ["src/database"],
       "database/*": ["src/database/*"],
-      "providers": ["src/providers"],
-      "providers/*": ["src/providers/*"]
+      "models/*": ["src/models/*"]
     }
   },
   "include": ["src/**/*"],

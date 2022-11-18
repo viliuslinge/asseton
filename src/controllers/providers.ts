@@ -1,5 +1,5 @@
 import { Response, RequestHandler } from "express";
-import { providerFactory, AuthenticatedProvider } from "providers";
+import { providerFactory, AuthenticatedProvider } from "models/providers";
 import { db, DatabaseTypes } from "database";
 import { isDataSnapshotRefreshRequired } from "database/utils";
 
