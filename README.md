@@ -2,4 +2,4 @@
 
 #
 
-Access your assets.
+Another open banking api.
