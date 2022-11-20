@@ -1,9 +1,9 @@
 import * as dotenv from "dotenv";
 import NordigenApiRaw from "nordigen-node";
 
-export { AccountApi } from "nordigen-node/types/api";
 export { NordginenApiTypes } from "./types";
 export type { nordigenApi as INordigenApi };
+export type AccountApi = ReturnType<NordigenApiRaw["account"]>;
 
 dotenv.config();
 
